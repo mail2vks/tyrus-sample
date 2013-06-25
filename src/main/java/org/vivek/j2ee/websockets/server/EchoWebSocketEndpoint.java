@@ -1,25 +1,44 @@
 package org.vivek.j2ee.websockets.server;
 
-import javax.websocket.*;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
-public class EchoWebSocketEndpoint extends Endpoint {
+@ServerEndpoint(value = "/echo")
+public class EchoWebSocketEndPoint {
 
-	@Override
-	public void onOpen(Session session, EndpointConfig config) {
-		final RemoteEndpoint.Basic endPoint = session.getBasicRemote();
+	private static List<Session> connectedSessions = new LinkedList<>();
 
-		session.addMessageHandler(new MessageHandler.Whole<String>() {
-			@Override
-			public void onMessage(String message) {
-				try {
-					endPoint.sendText(System.currentTimeMillis() + " " + message);
-				} catch (IOException e) {
-					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-				}
-			}
-		});
-
+	@OnMessage
+	public void getMessage(final String message, final Session session) {
+		if (!connectedSessions.contains(session)) {
+			connectedSessions.add(session);
+			broadcastToAll("user" + session.getId() + " joined");
+		} else {
+			broadcastToAll("user" + session.getId() + " says > " + message);
+		}
 
 	}
+
+	private void broadcastToAll(final String s) {
+		for (Session session : connectedSessions) {
+			try {
+				session.getBasicRemote().sendText(s);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@OnClose
+	public void closeConnectionHandler(Session session, CloseReason closeReason) {
+		connectedSessions.remove(session);
+		broadcastToAll("user" + session.getId() + " quit");
+	}
+
 }

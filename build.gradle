@@ -1,18 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
-/*
-Task name	Depends on	Type	Description
-idea	ideaProject, ideaModule, ideaWorkspace	-	Generates all IDEA configuration files
-cleanIdea	cleanIdeaProject, cleanIdeaModule	Delete	Removes all IDEA configuration files
-cleanIdeaProject	-	Delete	Removes the IDEA project file
-cleanIdeaModule	-	Delete	Removes the IDEA module file
-cleanIdeaWorkspace	-	Delete	Removes the IDEA workspace file
-ideaProject	-	GenerateIdeaProject	Generates the .ipr file. This task is only added to the root project.
-ideaModule	-	GenerateIdeaModule	Generates the .iml file
-ideaWorkspace	-	GenerateIdeaWorkspace	Generates the .iws file. This task is only added to the root project.
-
- */
 repositories {
     mavenCentral()
 }

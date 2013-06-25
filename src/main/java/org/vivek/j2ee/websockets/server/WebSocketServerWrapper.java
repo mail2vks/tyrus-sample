@@ -14,17 +14,14 @@ public class WebSocketServerWrapper {
 	}
 
 	private static void runServer() {
-
-		Server server = new Server(EchoWebSocketEndpoint.class);
+		Server server = new Server("localhost", 8025, "/websocket", EchoWebSocketEndPoint.class);
 		try {
 			server.start();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			System.out.print("Please press a key to stop the server.");
 			reader.readLine();
-		} catch (DeploymentException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-		} catch (IOException e) {
-			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		} catch (DeploymentException | IOException e) {
+			e.printStackTrace();
 		} finally {
 			server.stop();
 		}
